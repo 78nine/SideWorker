@@ -1,7 +1,8 @@
 // WORKER
 if (typeof document !== 'undefined') {
-  function SideWorker(init) {
-    this.worker = new Worker('SideWorker.min.js#newWorker');
+  function SideWorker(path, init) {
+    path = path || 'SideWorker.min.js';
+    this.worker = new Worker(path + '#newWorker');
     this.func = false;
     this._cb = {};
     this.callFunction = function (name, args) {
