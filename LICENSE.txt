@@ -1,6 +1,7 @@
 The MIT License (MIT)
 
-Copyright (c) 2015 Luke Schaefer
+Copyright (c) 2015 Luke Schaefer (original idea and code)
+Copyright (c) 2021 https://github.com/78nine (further adjustments)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

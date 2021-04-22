@@ -1,0 +1,25 @@
+{
+  "name": "@78nine/sideworker",
+  "version": "1.0.0",
+  "description": "SideWorker is a minimal JavaScript library to make Web Workers usage as painless as possible",
+  "main": "SideWorker.js",
+  "unpkg": "SideWorker.min.js",
+  "scripts": {
+    "build": "terser --compress --mangle -o $npm_package_unpkg $npm_package_main ",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/78nine/SideWorker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/78nine/SideWorker/issues"
+  },
+  "homepage": "https://github.com/78nine/SideWorker#readme",
+  "devDependencies": {
+    "terser": "5.6.1"
+  }
+}
