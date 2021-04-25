@@ -1,9 +1,11 @@
 const _uuid = () => URL.createObjectURL(new Blob()).split('/').pop()
 
 function SideWorker({ debug, init } = {}, ...args) {
-  const blobUrl = URL.createObjectURL(
-    new Blob([insideWorker(debug)], { type: 'text/javascript' })
-  )
+  const blobStr = insideWorker.toString()
+    .replace(/^e=>{/, `const e=${debug?1:0};`)
+    .replace(/}$/, '')
+
+  const blobUrl = URL.createObjectURL(new Blob([blobStr], { type: 'text/javascript' }))
 
   this.worker = new Worker(blobUrl)
   URL.revokeObjectURL(blobUrl)
@@ -50,64 +52,67 @@ function SideWorker({ debug, init } = {}, ...args) {
 
 export default SideWorker
 
-const insideWorker = (debug = false) => (`
-${debug && `console.debug('SideWorker initialised.')`}
+const insideWorker = (debug) => {
+  if (debug) {
+    console.debug('SideWorker initialised.')
+  }
 
-const ERROR_NOT_DEFINED = 'ERROR! FUNCTION NOT DEFINED!'
-const SEPARATOR = ':'
-const _split = arg => arg.split(SEPARATOR)
-const _join = (...args) => args.join(SEPARATOR)
+  const ERROR_NOT_DEFINED = 'ERROR! FUNCTION NOT DEFINED!'
+  const SEPARATOR = ':'
+  const _split = arg => arg.split(SEPARATOR)
+  const _join = (...args) => args.join(SEPARATOR)
 
-function SideWorker() {
-  this.func = null
-  this.define = (name, strfunc) => {
-    const runner = new Function('return ' + strfunc)()
+  function SideWorker() {
+    this.func = false
+    this.define = (name, strfunc) => {
+      const runner = new Function('return ' + strfunc)()
 
-    this[name] = (id, args) => {
-      self.postMessage(_join(name, id))
+      this[name] = (id, args) => {
+        self.postMessage(_join(name, id))
 
-      try {
-        const response = runner.apply(this, args)
-        self.postMessage([null, response])
-      } catch (err) {
-        self.postMessage([err])
+        try {
+          const response = runner.apply(this, args)
+          self.postMessage([, response])
+        } catch (err) {
+          self.postMessage([err])
+        }
+
+        this.func = false
+      }
+    }
+  }
+
+  const worker = new SideWorker()
+
+  self.addEventListener('message', (e) => {
+    if (!worker.func) {
+      worker.func = e.data
+
+      const [ name ] = _split(e.data)
+
+      if (!worker[name]) {
+        console.error(ERROR_NOT_DEFINED, name)
+      }
+    } else {
+      const func = worker.func
+      const [ name, id ] = _split(func)
+
+      worker.func = false
+
+      if (debug) {
+        if(name === 'define') {
+          console.debug(`Defining "${e.data[0]}"`)
+        } else {
+          console.debug(`Calling "${name}" (id: ${id})`)
+        }
       }
 
-      this.func = null
+      if (worker[name]) {
+        const data = (name === 'define' && !id) ? e.data : [id, e.data];
+        worker[name].apply(worker, data)
+      } else {
+        console.error(ERROR_NOT_DEFINED, worker[name])
+      }
     }
-  }
+  })
 }
-
-const worker = new SideWorker()
-
-self.addEventListener('message', (e) => {
-  if (!worker.func) {
-    worker.func = e.data
-
-    const [ name ] = _split(e.data)
-
-    if (!worker[name]) {
-      console.error(ERROR_NOT_DEFINED, name)
-    }
-  } else {
-    const func = worker.func
-    const [ name, id ] = _split(func)
-
-    worker.func = null
-
-    ${debug && `
-    if(name === 'define') {
-      console.debug(\`Defining "\${e.data[0]}"\`)
-    } else {
-      console.debug(\`Calling "\${name}" (id: \${id})\`)
-    }`}
-
-    if (worker[name]) {
-      const data = (name === 'define' && !id) ? e.data : [id, e.data];
-      worker[name].apply(worker, data)
-    } else {
-      console.error(ERROR_NOT_DEFINED, worker[name])
-    }
-  }
-})
-`)
