@@ -1,4 +1,3 @@
-
 function SideWorker({ debug, init } = {}, ...args) {
   const blob = new Blob([insideWorker(debug)], { type: 'text/javascript' })
   const blobUrl = window.URL.createObjectURL(blob)
@@ -41,7 +40,7 @@ export default SideWorker
 
 const insideWorker = (debug = false) => (`
 ${debug && `console.debug('SideWorker initialised.')`}
-[DUPA]
+
 var ERROR_NOT_DEFINED = 'ERROR! FUNCTION NOT DEFINED!'
 
 function SideWorker() {
@@ -62,7 +61,7 @@ SideWorker.prototype.loadLibrary = function () {
   importScripts().call(arguments)
 }
 
-worker = new SideWorker()
+var worker = new SideWorker()
 
 self.addEventListener('message', function (e) {
   if (!worker.func) {

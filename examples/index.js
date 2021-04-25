@@ -13,16 +13,16 @@ w.define(
     return num * self.value
   },
   res => console.log(`the 'ask' result is: ${res}`)
-  )
+)
 
-  w.ask(2)
+w.ask(2)
 
-  w.define(
-    'check',
-    (name) => {
-      console.debug(`:: check('${name}')`)
-      return { name, exists: !!worker[name] && typeof worker[name] === 'function' }
-    },
+w.define(
+  'check',
+  (name) => {
+    console.debug(`:: check('${name}')`)
+    return { name, exists: !!worker[name] && typeof worker[name] === 'function' }
+  },
   ({ name, exists }) => console.log(`worker.${name}() ${exists ? 'exists' : 'does NOT exist'}`)
 )
 
