@@ -16,23 +16,23 @@ w.define(
 
 w.run.ask(2).then(res => console.log(`the 'ask' result is: ${res}`))
 
-const hasNameHandler = ({ name, exists }) => console.log(`worker.${name}() ${exists ? 'exists' : 'does NOT exist'}`)
+const isNumberHandler = ({ arg, is }) => console.log(`${arg} is ${is ? 'a' : 'NOT a'} number`)
 w.define(
   'check',
-  (name) => {
-    console.debug(`:: check('${name}')`)
-    return { name, exists: !!worker[name] && wots(worker[name]) === 'function' }
+  (arg) => {
+    console.debug(`:: check('${arg}')`)
+    return { arg, is: wots(arg) === 'number' }
   }
 )
 
-w.run.check('loadLibrary').then(hasNameHandler)
-w.run.check('ask').then(hasNameHandler)
+w.run.check(42).then(isNumberHandler)
+w.run.check(null * undefined).then(isNumberHandler)
 
 ;(async () => {
-  hasNameHandler(await w.run.check('check'))
+  isNumberHandler(await w.run.check(789))
 })()
 
-w.run.check('WHAT_EVER').then(hasNameHandler)
+w.run.check('WHAT_EVER').then(isNumberHandler)
 
 w.define(
   'errorProne',
