@@ -1,8 +1,12 @@
 const debug = true
 const init = (value = 11) => {
   console.debug(`:: init(${value})`)
+
   importScripts('https://unpkg.com/wots')
+
   self.value = value
+
+  self.getDefaultErrorMessage = () => 'something bad happened'
 }
 const w = new SideWorker({ debug, init }, 21)
 
@@ -36,7 +40,7 @@ w.run.check('WHAT_EVER').then(isNumberHandler)
 
 w.define(
   'errorProne',
-  () => { throw new Error('something bad happened') }
+  () => { throw new Error(getDefaultErrorMessage()) }
 )
 
 w.run.errorProne().catch(err => {
