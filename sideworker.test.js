@@ -96,7 +96,7 @@ describe('SideWorker', () => {
       expect(instance.run.init).to.be.a('function')
     })
 
-    it('should allow it to define a globally available variables and functions', async () => {
+    it('should allow it to define globally available variables and functions', async () => {
       instance.define('conclude', () => [getFirst(), testResult].join(' '))
       expect(await instance.run.conclude()).to.equal('test passed')
     })
