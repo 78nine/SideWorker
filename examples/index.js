@@ -23,7 +23,7 @@ w.run.ask(2).then(res => console.log(`the 'ask' result is: ${res}`))
 const isNumberHandler = ({ arg, is }) => console.log(`${arg} is ${is ? 'a' : 'NOT a'} number`)
 w.define(
   'check',
-  (arg) => {
+  arg => {
     console.debug(`:: check('${arg}')`)
     return { arg, is: wots(arg) === 'number' }
   }
