@@ -2,8 +2,10 @@ const _uuid = () => URL.createObjectURL(new Blob()).split('/').pop()
 
 function SideWorker({ debug, init } = {}, ...args) {
   const blobStr = insideWorker.toString()
-    .replace(/^\(debug\) => {/, `const debug = ${debug?1:0};`) // for module version
-    .replace(/^e=>{/, `const e=${debug?1:0};`) // for minimised version
+    .replace(
+      /^\(?([a-z]+)\)?\s*=>\s*{/,
+      (_, p) => `const ${p}=${debug?1:0};`
+    )
     .replace(/}$/, '')
 
   const blobUrl = URL.createObjectURL(new Blob([blobStr], { type: 'text/javascript' }))
