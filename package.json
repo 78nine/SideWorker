@@ -1,6 +1,6 @@
 {
   "name": "@78nine/sideworker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SideWorker is a minimal JavaScript library to make Web Workers usage as painless as possible",
   "main": "sideworker.js",
   "module": "sideworker.js",
@@ -19,7 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/78nine/SideWorker.git"
   },
-  "keywords": [],
+  "keywords": ["web worker", "worker"],
   "author": "",
   "license": "MIT",
   "bugs": {
