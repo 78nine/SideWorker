@@ -75,6 +75,22 @@ describe('SideWorker', () => {
       })
     })
 
+    describe('when defining a Promise-returning method', () => {
+      before(() => {
+        instance.define('promiseMe', () => {
+          return new Promise((resolve) => {
+            resolve(42)
+          })
+        })
+      })
+
+      it('should return the result of the Promised-function', () => {
+        it('should eventually return the methods result', async () => {
+          expect(await instance.run.promiseMe()).to.equal(42)
+        })
+      })
+    })
+
     after(() => {
       instance.worker.terminate()
     })

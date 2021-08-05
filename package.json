@@ -13,7 +13,9 @@
     "test": "live-server --open=tests"
   },
   "files": [
-    "sideworker.*"
+    "sideworker.js",
+    "sideworker.min.js",
+    "README.md"
   ],
   "repository": {
     "type": "git",

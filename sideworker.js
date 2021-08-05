@@ -37,10 +37,10 @@ function SideWorker({ debug, init } = {}, ...args) {
     if (!this.func) {
       this.func = e.data
     } else {
-      const [ err, ...response ] = e.data
+      const [ err, response ] = e.data
       const handler = this._cb.get(this.func)
 
-      !err ? handler.resolve(...response) : handler.reject(err)
+      !err ? handler.resolve(response) : handler.reject(err)
 
       this._cb.delete(this.func);
       this.func = null
@@ -75,7 +75,12 @@ const insideWorker = (debug) => {
 
         try {
           const response = runner.apply(this, args)
-          self.postMessage([, response])
+
+          if (response instanceof Promise) {
+            response.then(final => self.postMessage([, final]))
+          } else {
+            self.postMessage([, response])
+          }
         } catch (err) {
           self.postMessage([err])
         }
