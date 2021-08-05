@@ -1,6 +1,6 @@
 {
   "name": "@78nine/sideworker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "SideWorker is a minimal JavaScript library to make Web Workers usage as painless as possible",
   "main": "sideworker.js",
   "module": "sideworker.js",
